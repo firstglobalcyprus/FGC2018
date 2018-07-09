@@ -1,0 +1,4 @@
+#Mon Jul 09 14:00:59 EEST 2018
+base.0=C\:\\Users\\~Christos~\\Documents\\FIRST\\first_global_2018\\FGC_2018-master\\TeamCode\\build\\intermediates\\transforms\\dexMerger\\debug\\0
+path.0=classes.dex
+renamed.0=classes.dex

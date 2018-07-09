@@ -9,10 +9,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Hardware;
 
 public class Cubes implements Runnable {
-    private enum MotorPosition {
+    private enum CollectorState {
         IN, OUT, STOPPED
     }
-    private MotorPosition collectorPosition = MotorPosition.STOPPED;
+    private CollectorState collectorState = CollectorState.STOPPED;
     private ElapsedTime collectorBtnTime = new ElapsedTime();
 
     private static double liftSpeed = 0.8;
@@ -83,21 +83,21 @@ public class Cubes implements Runnable {
                 }
 
                 if (gamepad1.left_bumper && collectorBtnTime.milliseconds() > 300) {
-                    if (collectorPosition != MotorPosition.IN) {
+                    if (collectorState != CollectorState.IN) {
                         collector.setPower(collectorSpeed);
-                        collectorPosition = MotorPosition.IN;
+                        collectorState = CollectorState.IN;
                     } else {
                         collector.setPower(0);
-                        collectorPosition = MotorPosition.STOPPED;
+                        collectorState = CollectorState.STOPPED;
                     }
                     collectorBtnTime.reset();
                 } else if (gamepad1.left_trigger > 0.5 && collectorBtnTime.milliseconds() > 300) {
-                    if (collectorPosition != MotorPosition.OUT) {
+                    if (collectorState != CollectorState.OUT) {
                         collector.setPower(-collectorSpeed);
-                        collectorPosition = MotorPosition.OUT;
+                        collectorState = CollectorState.OUT;
                     } else {
                         collector.setPower(0);
-                        collectorPosition = MotorPosition.STOPPED;
+                        collectorState = CollectorState.STOPPED;
                     }
                     collectorBtnTime.reset();
                 }

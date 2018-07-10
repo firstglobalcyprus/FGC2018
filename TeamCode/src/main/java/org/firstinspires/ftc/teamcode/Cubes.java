@@ -18,9 +18,9 @@ public class Cubes implements Runnable {
     private static double liftSpeed = 0.8;
     private static double collectorSpeed = 1;
 
-    private static double minLiftPositionInit = 0.06;
-    private static double minLiftPosition = 0.18;
-    private static double maxLiftPosition = 0.85;
+    private static double minLiftPositionInit = 0.17;
+    private static double minLiftPosition = 0.3;
+    private static double maxLiftPosition = 0.9;
 
     private boolean killed = false;
     private boolean started = false;

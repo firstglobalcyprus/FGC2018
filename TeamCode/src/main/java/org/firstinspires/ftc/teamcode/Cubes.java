@@ -9,39 +9,48 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Hardware;
 
 public class Cubes implements Runnable {
+    // This is to keep track of the collector state
     private enum CollectorState {
         IN, OUT, STOPPED
     }
     private CollectorState collectorState = CollectorState.STOPPED;
     private ElapsedTime collectorBtnTime = new ElapsedTime();
 
+    // Max power values
     private static double liftSpeed = 0.8;
     private static double collectorSpeed = 1;
 
+    // Set the limits for the lift
     private static double minLiftPositionInit = 0.17;
     private static double minLiftPosition = 0.3;
     private static double maxLiftPosition = 0.9;
 
+    // Declare these to keep track the state of the thread
     private boolean killed = false;
     private boolean started = false;
 
+    // Declaring the potentiometer and the motors
     private AnalogInput encoderPot;
-
     private DcMotor collector;
     private DcMotor leftLift, rightLift;
 
     private Gamepad gamepad1;
-
     private Thread thread;
 
     public void init(HardwareMap hardwareMap, Gamepad gp) {
         gamepad1 = gp;
 
+        // Initializing the potentiometer
         encoderPot = hardwareMap.get(AnalogInput.class, "encoderPot");
 
+        // Initializing the collector motor
         collector = hardwareMap.get(DcMotor.class, "collector");
         collector.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        // Initializing the 2 lift motors
+        // Setting their direction
+        // Setting ZeroPowerBehavior
+        // Initializing the encoders
         leftLift = hardwareMap.get(DcMotor.class, "leftLift");
         leftLift.setDirection(DcMotorSimple.Direction.FORWARD);
         leftLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -54,23 +63,30 @@ public class Cubes implements Runnable {
         rightLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        // Initializing the thread
         thread = new Thread(this);
     }
 
+    // Start the thread
     public void start() {
         thread.start();
         started = true;
         collectorBtnTime.reset();
     }
 
+    // Stop the thread
     public void kill() {
         killed = true;
         started = false;
     }
 
+    // This function runs in parallel with the rest of the code
     public void run () {
         while (!killed) {
             while (started) {
+                // With R1 and R2 the lift goes up and down respectively
+                // The L1 btn toggles the collector (If pressed once it starts spinning to collect, if pressed again it stops)
+                // The L2 btn toggles the collector (If pressed once it starts spinning to spit out the cubes, if pressed again it stops)
                 if (gamepad1.right_bumper && getLiftPosition() < maxLiftPosition) {
                     leftLift.setPower(liftSpeed);
                     rightLift.setPower(liftSpeed);
@@ -105,7 +121,9 @@ public class Cubes implements Runnable {
         }
     }
 
+    // Get the potentiometers value
     public double getLiftPosition() {
+        // Convert the analog voltage of the potentiometer to a value between 0 and 1
         return 1 - encoderPot.getVoltage() / encoderPot.getMaxVoltage();
     }
 }

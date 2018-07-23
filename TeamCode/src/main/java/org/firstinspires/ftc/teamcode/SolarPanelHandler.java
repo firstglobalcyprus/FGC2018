@@ -14,8 +14,8 @@ public class SolarPanelHandler implements Runnable {
     // Preset positions for the servo lift (0 - 1)
     // The higher the value the lower the claw goes
     private static double liftDownPosition = 1;
-    private static double liftGripPosition = 0.5;
-    private static double liftUpPosition   = 0.3;
+    private static double liftGripPosition = 0.4;
+    private static double liftUpPosition   = 0;
 
     // Preset positions for the gripper
     private static double gripperClosed    = 1;

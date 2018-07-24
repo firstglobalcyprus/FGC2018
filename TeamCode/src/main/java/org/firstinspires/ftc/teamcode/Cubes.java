@@ -17,7 +17,7 @@ public class Cubes implements Runnable {
     private ElapsedTime collectorBtnTime = new ElapsedTime();
 
     // Max power values
-    private static double liftSpeed = 0.8;
+    private static double liftSpeed = 1;
     private static double collectorSpeed = 1;
 
     // Set the limits for the lift

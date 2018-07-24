@@ -75,15 +75,19 @@ public class SolarPanelHandler implements Runnable {
                 // If the b key is pressed the claw closes
                 if(gamepad1.y && lastYButtonPress.milliseconds() > 300) {
                     if (liftPosition == liftGripPosition) setServoPosition(SolarServo.lift, liftElevatePosition, 0);
-                    else setServoPosition(SolarServo.lift, liftGripPosition, 0);
+                    else {
+                        setServoPosition(SolarServo.lift, liftGripPosition, 400);
+                        setServoPosition(SolarServo.gripper, gripperOpen, 0);
+                    }
 
                     lastYButtonPress.reset();
                 } else if (gamepad1.a) {
+                    setServoPosition(SolarServo.gripper, gripperClosed, 700);
                     setServoPosition(SolarServo.lift, liftStorePosition, 0);
                 }
 
                 if(gamepad1.x) setServoPosition(SolarServo.gripper, gripperClosed, 0);
-                else if (gamepad1.b) setServoPosition(SolarServo.gripper, gripperOpen, 0);
+                else if (gamepad1.b && liftPosition != liftStorePosition) setServoPosition(SolarServo.gripper, gripperOpen, 0);
             }
         }
     }
@@ -105,8 +109,9 @@ public class SolarPanelHandler implements Runnable {
         thread.start();
         started = true;
 
-        setServoPosition(SolarServo.gripper, gripperOpen, 700);
+        setServoPosition(SolarServo.gripper, gripperClosed, 700);
         setServoPosition(SolarServo.lift, liftGripPosition, 0);
+        setServoPosition(SolarServo.gripper, gripperOpen, 0);
     }
 
     // Stop the thread

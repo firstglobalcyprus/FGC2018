@@ -11,15 +11,18 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 // Controlling the claw that grabs the solar panel
 public class SolarPanelHandler implements Runnable {
+    enum SolarServo {
+        lift, gripper
+    }
     // Preset positions for the servo lift (0 - 1)
     // The higher the value the lower the claw goes
-    private static double liftDownPosition = 1;
-    private static double liftGripPosition = 0.4;
-    private static double liftUpPosition   = 0;
+    private static double liftElevatePosition = 0.9;
+    private static double liftGripPosition = 0.66;
+    private static double liftStorePosition   = 1;
 
     // Preset positions for the gripper
-    private static double gripperClosed    = 1;
-    private static double gripperOpen      = 0;
+    private static double gripperClosed    = 0;
+    private static double gripperOpen      = 0.7;
 
     // Store the current position of the servos
     private double liftPosition, gripperPosition;
@@ -47,13 +50,17 @@ public class SolarPanelHandler implements Runnable {
         gripper = hm.get(Servo.class, "gripper");
         lift = hm.get(Servo.class, "liftServo");
 
-        lift.setPosition(liftDownPosition);
-        liftPosition = liftDownPosition;
-
-        gripperPosition = gripperOpen;
+        initServoPositions();
 
         // Initialize the tread
         thread = new Thread(this);
+    }
+
+    private void initServoPositions() {
+        setServoPosition(SolarServo.lift, liftGripPosition, 700);
+        setServoPosition(SolarServo.gripper, gripperPosition, 1200);
+        setServoPosition(SolarServo.lift, liftStorePosition, 700);
+        setServoPosition(SolarServo.gripper, gripperOpen, 0);
     }
 
     @Override
@@ -67,34 +74,29 @@ public class SolarPanelHandler implements Runnable {
                 // If the x key is pressed the claw opens
                 // If the b key is pressed the claw closes
                 if(gamepad1.y && lastYButtonPress.milliseconds() > 300) {
-                    if (liftPosition == liftGripPosition) {
-                        lift.setPosition(liftUpPosition);
-                        liftPosition = liftUpPosition;
-                    }
-                    else {
-                        lift.setPosition(liftGripPosition);
-                        liftPosition = liftGripPosition;
-                    }
+                    if (liftPosition == liftGripPosition) setServoPosition(SolarServo.lift, liftElevatePosition, 0);
+                    else setServoPosition(SolarServo.lift, liftGripPosition, 0);
+
                     lastYButtonPress.reset();
                 } else if (gamepad1.a) {
-                    gripper.setPosition(gripperOpen);
-                    gripperPosition = gripperOpen;
-                    delay(700);
-
-                    lift.setPosition(liftDownPosition);
-                    liftPosition = liftDownPosition;
+                    setServoPosition(SolarServo.lift, liftStorePosition, 0);
                 }
 
-                if(gamepad1.x) {
-                    gripper.setPosition(gripperOpen);
-                    gripperPosition = gripperOpen;
-                } else if (gamepad1.b) {
-                    if (liftPosition != liftDownPosition) {
-                        gripper.setPosition(gripperClosed);
-                        gripperPosition = gripperClosed;
-                    }
-                }
+                if(gamepad1.x) setServoPosition(SolarServo.gripper, gripperClosed, 0);
+                else if (gamepad1.b) setServoPosition(SolarServo.gripper, gripperOpen, 0);
             }
+        }
+    }
+
+    public void setServoPosition(SolarServo s, double pos, double t) {
+        if (s == SolarServo.lift) {
+            lift.setPosition(1 - pos);
+            liftPosition = pos;
+            delay(t);
+        } else if (s == SolarServo.gripper) {
+            gripper.setPosition(1 - pos);
+            gripperPosition = pos;
+            delay(t);
         }
     }
 
@@ -102,6 +104,9 @@ public class SolarPanelHandler implements Runnable {
     public void start() {
         thread.start();
         started = true;
+
+        setServoPosition(SolarServo.gripper, gripperOpen, 700);
+        setServoPosition(SolarServo.lift, liftGripPosition, 0);
     }
 
     // Stop the thread
@@ -112,6 +117,6 @@ public class SolarPanelHandler implements Runnable {
     // A function for adding a delay in the code for a set number of ms
     private void delay(double milliseconds) {
         delayTime.reset();
-        while (delayTime.milliseconds() < milliseconds && opMode.opModeIsActive());
+        while (delayTime.milliseconds() < milliseconds && !opMode.isStopRequested());
     }
 }

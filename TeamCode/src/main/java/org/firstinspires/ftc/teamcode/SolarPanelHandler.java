@@ -15,7 +15,7 @@ public class SolarPanelHandler implements Runnable {
         lift, gripper
     }
     // Preset positions for the servo lift (0 - 1)
-    // The higher the value the lower the claw goes
+    // The higher the value the higher the claw goes
     private static double liftElevatePosition = 0.9;
     private static double liftGripPosition = 0.66;
     private static double liftStorePosition   = 1;
@@ -54,6 +54,7 @@ public class SolarPanelHandler implements Runnable {
 
         // Initialize the tread
         thread = new Thread(this);
+        started = false;
     }
 
     private void initServoPositions() {
@@ -93,6 +94,7 @@ public class SolarPanelHandler implements Runnable {
     }
 
     public void setServoPosition(SolarServo s, double pos, double t) {
+        // Set the position of the servo after reversing the value (1 - pos)
         if (s == SolarServo.lift) {
             lift.setPosition(1 - pos);
             liftPosition = pos;

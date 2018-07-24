@@ -28,6 +28,7 @@ public class RobotDrive implements Runnable {
 
     // The max speed of the robot (0 - 1)
     private double maxSpeed = 0.5;
+    private double speedStep = 0.01;
 
     // Declare some useful variables
     private Thread thread;
@@ -140,17 +141,16 @@ public class RobotDrive implements Runnable {
     }
 
     // Get the current max speed
-    public double getCurrentSpeed() {
+    public double getSpeed() {
         return maxSpeed;
     }
 
-    // Increase robot's speed
-    public void increaseSpeed() {
-        if (maxSpeed < 1) maxSpeed += 0.01;
+    // Set the max speed of the robot
+    public void setSpeed(double speed) {
+        maxSpeed = speed;
     }
 
-    // Decrease robot's speed
-    public void decreaseSpeed() {
-        if (maxSpeed > 0.05) maxSpeed -= 0.01;
+    public double getSpeedStep() {
+        return speedStep;
     }
 }

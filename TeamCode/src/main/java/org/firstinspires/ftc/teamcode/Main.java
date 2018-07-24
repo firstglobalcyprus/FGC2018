@@ -20,6 +20,9 @@ public class Main extends LinearOpMode {
     private SolarPanelHandler panelHandler = new SolarPanelHandler();
     private Windmill windmill = new Windmill();
 
+    private double collectionSpeed = 0.25;
+    private double normalSpeed = 0.6;
+
     // Store the time since the last speed change
     private ElapsedTime lastSpeedChange = new ElapsedTime();
 
@@ -59,19 +62,26 @@ public class Main extends LinearOpMode {
             // dpad_down --> decrease
             if (lastSpeedChange.milliseconds() > 20) {
                 if (gamepad1.dpad_up) {
-                    robot.increaseSpeed();
+                    robot.setSpeed(robot.getSpeed() + robot.getSpeedStep());
                     lastSpeedChange.reset();
-                }
-                else if (gamepad1.dpad_down) {
-                    robot.decreaseSpeed();
+                } else if (gamepad1.dpad_down) {
+                    robot.setSpeed(robot.getSpeed() - robot.getSpeedStep());
                     lastSpeedChange.reset();
                 }
             }
 
+            // COMMENT THIS
+            if (lastSpeedChange.milliseconds() > 400 && gamepad1.right_stick_button) {
+                if (robot.getSpeed() == collectionSpeed) robot.setSpeed(normalSpeed);
+                else robot.setSpeed(collectionSpeed);
+                lastSpeedChange.reset();
+            }
+            // COMMENT THIS
+
             // Update the telemetry with new values
             pot.setValue(cubeHandler.getLiftPosition());
 
-            driveSpeed.setValue(robot.getCurrentSpeed());
+            driveSpeed.setValue(robot.getSpeed());
             telemetry.update();
         }
 

@@ -1,4 +1,4 @@
-#Tue Jul 24 11:38:16 EEST 2018
-base.0=C\:\\Users\\~Christos~\\Documents\\FIRST\\first_global_2018\\FGC2018\\TeamCode\\build\\intermediates\\transforms\\dexMerger\\debug\\0
+#Mon Jul 30 10:31:02 EEST 2018
+base.0=D\:\\Documents\\AndroidStudioProjects\\FGC2018\\TeamCode\\build\\intermediates\\transforms\\dexMerger\\debug\\0
 path.0=classes.dex
 renamed.0=classes.dex

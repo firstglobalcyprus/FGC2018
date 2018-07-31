@@ -74,7 +74,7 @@ public class SolarPanelHandler implements Runnable {
                 // If at any time the a key is pressed the claw opens if closed the goes down
                 // If the x key is pressed the claw opens
                 // If the b key is pressed the claw closes
-                if(gamepad1.y && lastYButtonPress.milliseconds() >  500) {
+                if(gamepad1.y && lastYButtonPress.milliseconds() > 500) {
                     if (liftPosition == liftGripPosition) setServoPosition(SolarServo.lift, liftElevatePosition, 0);
                     else {
                         setServoPosition(SolarServo.lift, liftGripPosition, 400);

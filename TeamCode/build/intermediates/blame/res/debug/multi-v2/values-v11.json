@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "D:\\Documents\\AndroidStudioProjects\\FGC2018\\TeamCode\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v11\\values-v11.xml",
+            "outputFile": "C:\\Users\\Antreas\\Documents\\FGC2018\\TeamCode\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v11\\values-v11.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\peric\\.gradle\\caches\\transforms-1\\files-1.1\\RobotCore-release.aar\\abfbb573156dec8ad186615ec6d36dd1\\res\\values-v11\\values-v11.xml",
+                    "source": "C:\\Users\\Antreas\\.gradle\\caches\\transforms-1\\files-1.1\\RobotCore-release.aar\\d35b5cf79d455f4f3a55abdbab53dd73\\res\\values-v11\\values-v11.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

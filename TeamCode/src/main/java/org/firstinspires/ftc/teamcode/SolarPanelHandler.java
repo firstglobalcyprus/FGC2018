@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -12,8 +13,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 // Controlling the claw that grabs the solar panel
 public class SolarPanelHandler implements Runnable {
     enum SolarServo {
-        lift, gripper
+        lift
     }
+
+
     // Preset positions for the servo lift (0 - 1)
     // The higher the value the higher the claw goes
     private static double liftElevatePosition = 0.9;
@@ -33,7 +36,7 @@ public class SolarPanelHandler implements Runnable {
     private LinearOpMode opMode;
     private ElapsedTime  delayTime = new ElapsedTime();
 
-    private Servo       gripper;
+    private CRServo     gripper;
     private Servo       lift;
     private ElapsedTime lastYButtonPress = new ElapsedTime();
 
@@ -47,7 +50,8 @@ public class SolarPanelHandler implements Runnable {
         opMode = mode;
 
         // Initialize the 2 servos
-        gripper = hm.get(Servo.class, "gripper");
+
+        gripper = hm.get(CRServo.class, "gripper");
         lift = hm.get(Servo.class, "liftServo");
 
         initServoPositions();
@@ -59,14 +63,18 @@ public class SolarPanelHandler implements Runnable {
 
     private void initServoPositions() {
         setServoPosition(SolarServo.lift, liftGripPosition, 700);
-        setServoPosition(SolarServo.gripper, gripperPosition, 1200);
+
         setServoPosition(SolarServo.lift, liftStorePosition, 700);
-        setServoPosition(SolarServo.gripper, gripperOpen, 0);
+
     }
 
     @Override
     // This function runs in parallel with the rest of the code
     public void run() {
+
+        //the state of the gripper
+
+
         while (!killed) {
             while (started) {
                 // If the y key is pressed the claw goes up
@@ -78,17 +86,27 @@ public class SolarPanelHandler implements Runnable {
                     if (liftPosition == liftGripPosition) setServoPosition(SolarServo.lift, liftElevatePosition, 0);
                     else {
                         setServoPosition(SolarServo.lift, liftGripPosition, 400);
-                        setServoPosition(SolarServo.gripper, gripperOpen, 0);
+
                     }
 
                     lastYButtonPress.reset();
                 } else if (gamepad1.a) {
-                    setServoPosition(SolarServo.gripper, gripperClosed, 700);
+
                     setServoPosition(SolarServo.lift, liftStorePosition, 0);
                 }
 
-                if(gamepad1.x) setServoPosition(SolarServo.gripper, gripperClosed, 0);
-                else if (gamepad1.b && liftPosition != liftStorePosition) setServoPosition(SolarServo.gripper, gripperOpen, 0);
+                if(gamepad1.x) {
+                    gripper.setPower(1);
+                }
+                else if(gamepad1.b){
+                    gripper.setPower(-1);
+                }
+
+                else{
+                    gripper.setPower(0);
+                }
+
+
             }
         }
     }
@@ -99,10 +117,6 @@ public class SolarPanelHandler implements Runnable {
             lift.setPosition(1 - pos);
             liftPosition = pos;
             delay(t);
-        } else if (s == SolarServo.gripper) {
-            gripper.setPosition(1 - pos);
-            gripperPosition = pos;
-            delay(t);
         }
     }
 
@@ -111,9 +125,9 @@ public class SolarPanelHandler implements Runnable {
         thread.start();
         started = true;
 
-        setServoPosition(SolarServo.gripper, gripperClosed, 700);
+
         setServoPosition(SolarServo.lift, liftGripPosition, 0);
-        setServoPosition(SolarServo.gripper, gripperOpen, 0);
+
     }
 
     // Stop the thread
